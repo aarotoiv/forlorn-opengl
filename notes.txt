@@ -1,0 +1,15 @@
+ANIMATING THE DRAWING
+_________________________
+So, at the beginning of your rendering cycle, simply modify your box_vertices array as desired, then call the same thing as when you're putting data in for the first time:
+
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(box_vertices), box_vertices, GL_STATIC_DRAW)
+
+GL_DYNAMIC_DRAW?
+_________________________
+
+
+
+
+Compile script
+g++ -std=c++0x *.cpp -w -lSDL2 -lGLEW -lGL -o meme
