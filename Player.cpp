@@ -17,20 +17,6 @@ Player::Player() {
     uniformView = 0;
 
     //gl_Position = projection * view * model * vec4(pos, 1.0)
-    /*
-    unsigned int indices[] = {
-            0,3,1,
-            1,3,2,
-            2,3,0,
-            0,1,2
-    };*/
-    /*s
-    GLfloat vertices[] = {
-        -1.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 1.0f, 
-        1.0f, -1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f
-    };*/
 
     unsigned int indices[] = {
         //BODY (4 * 3 = 12)
@@ -176,8 +162,6 @@ void Player::Update(float updateRate) {
         direction = true;
     if(xMom < 0) 
         direction = false;
-
-
 }
 
 
