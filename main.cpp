@@ -20,14 +20,11 @@ int main(int argc, char* args[]) {
 
     game->init("Meme", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, false);
 
-    update = SDL_CreateThread(updateThread, "bro", NULL);
-    render = SDL_CreateThread(renderThread, "yeah", NULL);
-    event = SDL_CreateThread(eventThread, "lul", NULL);
-
-    while(game->running()) {
-        //std::cout << "running" << std::endl;
-    }
-
+    update = SDL_CreateThread(updateThread, "updateThread", NULL);
+    render = SDL_CreateThread(renderThread, "renderThread", NULL);
+    event = SDL_CreateThread(eventThread, "eventThread", NULL);
+    
+    SDL_WaitThread(render, NULL);
     return 0;
 }
 int updateThread(void *data) {

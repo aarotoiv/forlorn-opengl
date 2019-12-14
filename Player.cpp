@@ -134,6 +134,12 @@ void Player::Draw(glm::mat4 projectionMatrix) {
     model = glm::scale(model, glm::vec3(scaleDirectionMod * scale, scale, 1.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    
+    
+    
+    // works glUniform3f(theShader->GetColorLocation(), 1.0f, 1.0f, 1.0f);
+    
+    
     //HANDLE MATRIX STUFF
     theMesh->RenderMesh();
     

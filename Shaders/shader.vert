@@ -7,6 +7,7 @@ out vec4 vCol;
 uniform mat4 model; 
 uniform mat4 projection;
 uniform mat4 view;
+uniform vec3 uColor;
 
 void main() {
     gl_Position = projection * model * vec4(pos, 1.0);

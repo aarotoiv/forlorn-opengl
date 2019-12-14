@@ -12,17 +12,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         flags = SDL_WINDOW_FULLSCREEN;
     }
     if(SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-        std::cout << "SUBSYSTEMS INITIALIZEd" << std::endl;
-        window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-        if(window) {
-            std::cout << "window created" << std::endl;
-        }
-        /*renderer = SDL_CreateRenderer(window, -1, 0);
-        if(renderer) {
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-            std::cout << "Renderer created" << std::endl;
-        }*/
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -39,6 +28,19 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+        
+        std::cout << "SUBSYSTEMS INITIALIZEd" << std::endl;
+        window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+        if(window) {
+            std::cout << "window created" << std::endl;
+        }
+        /*renderer = SDL_CreateRenderer(window, -1, 0);
+        if(renderer) {
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            std::cout << "Renderer created" << std::endl;
+        }*/
+        
 
         gContext = SDL_GL_CreateContext(window);
         if(gContext == NULL) {
