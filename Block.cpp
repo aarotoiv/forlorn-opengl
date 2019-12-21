@@ -48,7 +48,7 @@ void Block::draw(glm::mat4 projectionMatrix, float playerX, float playerY) {
     theShader->UseShader();
     uniformProjection = theShader->GetProjectionLocation();
     uniformModel = theShader->GetModelLocation();
-    glm::mat4 model;
+    glm::mat4 model(1.0);
     model = glm::translate(model, glm::vec3(0.0f - playerX, 0.0f + playerY, -2.5f));
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));

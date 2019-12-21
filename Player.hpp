@@ -15,7 +15,7 @@ class Player {
         Player();
         void Draw(glm::mat4 projectionMatrix);
         void DrawLimb(GLfloat* vertices, unsigned int* indices, glm::vec4 color);
-        void Update(float updateRate);
+        void Update(double updateRate);
         ~Player();
 
         float GetX();
@@ -33,7 +33,6 @@ class Player {
         Mesh *theMesh;
         Shader *theShader;   
         GLuint uniformModel, uniformProjection, uniformView;
-        glm::mat4 model;
         float bottomY = -0.5f;
         float xPos, yPos;
         float baseWidth = 0.35f, baseHeight = 0.7f;

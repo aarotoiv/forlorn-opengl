@@ -23,7 +23,6 @@ class Block {
         GLuint uniformProjection, uniformModel, uniformView;
         Mesh *theMesh;
         Shader *theShader;
-        glm::mat4 model;
         float x, y, width, height;
 };
 

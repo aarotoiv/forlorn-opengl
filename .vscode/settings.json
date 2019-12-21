@@ -41,6 +41,11 @@
         "chrono": "cpp",
         "ratio": "cpp",
         "memory": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "atomic": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "string": "cpp",
+        "string_view": "cpp"
     }
 }

@@ -4,6 +4,7 @@ Player::Player() {
     xPos = spawnX;
     yPos = spawnY + bottomY;
     xMom = 0.0f;
+    yMom = 0.0f;
     direction = true;
 
     falling = true;
@@ -19,31 +20,37 @@ Player::Player() {
     //gl_Position = projection * view * model * vec4(pos, 1.0)
 
     unsigned int indices[] = {
+        0,1,2,
+        0,2,3,
         //BODY (4 * 3 = 12)
-        0, 1, 2,
-        0, 3, 1,
-        0, 3, 4,
-        4, 5, 3,
+        4, 5, 6,
+        4, 7, 5,
+        4, 7, 8,
+        8, 9, 7,
 
         //leftleg (6)
-        6, 7, 8,
-        6, 8, 9,
-        
-        //rightleg (6)
         10, 11, 12,
         10, 12, 13,
-
-        //head (6)
+        
+        //rightleg (6)
         14, 15, 16,
         14, 16, 17,
+
+        //head (6)
+        18, 19, 20,
+        18, 20, 21,
         
         //hand
-        18, 19, 20,
-        18, 20, 21
+        22, 23, 24,
+        22, 24, 25
 
     };
     
     GLfloat vertices[] = {
+        0.045f, bottomY + 0.325f, 1.0f, 
+        0.195f, bottomY + 0.325f, 1.0f,
+        0.195f, bottomY + 0.175f, 1.0f,
+        0.045f, bottomY + 0.175f, 1.0f,
         //BODY (6 * 3 = 18)
         -0.075f, bottomY + 0.4f, 1.0f,
         -0.075f, bottomY + 0.05f, 1.0f,
@@ -68,13 +75,19 @@ Player::Player() {
         0.175f, bottomY + 0.36f, 1.0f,
         -0.15f, bottomY + 0.4f, 1.0f,
         //hand
-        0.025f, bottomY + 0.325f, 1.0f, 
-        0.175f, bottomY + 0.325f, 1.0f,
-        0.175f, bottomY + 0.175f, 1.0f,
-        0.025f, bottomY + 0.175f, 1.0f
+        0.010f, bottomY + 0.325f, 1.0f, 
+        0.160f, bottomY + 0.325f, 1.0f,
+        0.160f, bottomY + 0.175f, 1.0f,
+        0.010f, bottomY + 0.175f, 1.0f
 
     };
     GLfloat colors[] = {
+        //hand
+        1.0f, 200.0f / 255.0f, 157.0f / 255.0f,
+        1.0f, 200.0f / 255.0f, 157.0f / 255.0f,
+        1.0f, 200.0f / 255.0f, 157.0f / 255.0f,
+        1.0f, 200.0f / 255.0f, 157.0f / 255.0f,
+
         //BODY (6 * 3 = 18)
         0.2f, 0.2f, 0.2f,
         0.2f, 0.2f, 0.2f,
@@ -111,9 +124,10 @@ Player::Player() {
 
     theMesh = new Mesh();
     //vertex count, index count, colorcount
-    theMesh->CreateMesh(vertices, indices, 66, 36, colors, 66);
+    theMesh->CreateMesh(vertices, indices, 78, 42, colors, 78);
     theShader = new Shader();
     theShader->CreateFromFiles("Shaders/shader.vert", "Shaders/shader.frag");
+
 }
 /*void Player::DrawLimb(GLfloat* vertices, unsigned int* indices, glm::vec3 color) {
     theMesh->CreateMesh(vertices, indices, 12, 6);
@@ -129,7 +143,7 @@ void Player::Draw(glm::mat4 projectionMatrix) {
     theShader->UseShader();
     uniformProjection = theShader->GetProjectionLocation();
     uniformModel = theShader->GetModelLocation();
-    glm::mat4 model;
+    glm::mat4 model(1.0);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
     model = glm::scale(model, glm::vec3(scaleDirectionMod * scale, scale, 1.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -146,7 +160,8 @@ void Player::Draw(glm::mat4 projectionMatrix) {
     glUseProgram(0);
 }
 
-void Player::Update(float updateRate) {
+void Player::Update(double updateRate) {
+    std::cout << 0.02f * updateRate << "\t" << yMom << yMom + 0.02f * updateRate << std::endl;
     if(falling && yMom < yMomCap) {
         yMom += 0.02f * updateRate;
     } else {

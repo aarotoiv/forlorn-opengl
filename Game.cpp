@@ -82,7 +82,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     } 
 }
 
-void Game::update(float updateRate) {
+void Game::update(double updateRate) {
     //UPDATE FUNCTION
     player->Update(updateRate);
     Collisions collisions = world->checkCollisions(player->GetX(), player->GetBottom(), player->GetWidth(), player->GetHeight());
@@ -91,7 +91,6 @@ void Game::update(float updateRate) {
 }
 
 void Game::render() {
-    SDL_GL_MakeCurrent(window, gContext);
     //projection = glm::perspective(45.0f, (GLfloat)bufferWidth / (GLfloat)bufferHeight, 0.1f, 100.0f);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -101,7 +100,6 @@ void Game::render() {
     world->draw(projection, player->GetX(), player->YPosForDraw());
     SDL_GL_SwapWindow(window);
     //SDL_RenderPresent(renderer);
-
 }
 void Game::handleEvents() {
     SDL_Event event;

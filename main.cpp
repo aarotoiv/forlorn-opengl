@@ -2,7 +2,6 @@
 
 const int FPS = 60;
 const int frameDelay = 1000/FPS;
-
 Game *game = nullptr;
 SDL_Thread *update = nullptr;
 SDL_Thread *render = nullptr;
@@ -20,11 +19,25 @@ int main(int argc, char* args[]) {
 
     game->init("Meme", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, false);
 
-    update = SDL_CreateThread(updateThread, "updateThread", NULL);
-    render = SDL_CreateThread(renderThread, "renderThread", NULL);
-    event = SDL_CreateThread(eventThread, "eventThread", NULL);
+    Uint32 frameStart;
+    int frameTime;
+
+    update = SDL_CreateThread(updateThread, "updating", NULL);
+    event = SDL_CreateThread(eventThread, "events", NULL);
+
+    while(game->running()) {
+        frameStart = SDL_GetTicks();
+        
+        game->render();
+
+        frameTime = SDL_GetTicks() - frameStart;
+        if(frameDelay > frameTime) {
+            SDL_Delay(frameDelay-frameTime);
+        }
+    }
+
+    game->clean();
     
-    SDL_WaitThread(render, NULL);
     return 0;
 }
 int updateThread(void *data) {
@@ -36,27 +49,10 @@ int updateThread(void *data) {
             ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch());
         }
     }
-    game->clean();
 }
-int renderThread(void *data) {
-    
-    Uint32 frameStart;
-    int frameTime;
 
-    while(game->running()) {
-        frameStart = SDL_GetTicks();
-
-        game->render();
-        
-        frameTime = SDL_GetTicks() - frameStart;
-        if(frameDelay > frameTime) {
-            SDL_Delay(frameDelay-frameTime);
-        }
-    }
-}
 int eventThread(void *data) {
     while(game->running()) {
         game->handleEvents();
     }
 }
-

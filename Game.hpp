@@ -24,7 +24,7 @@ class Game {
 
         void init(const char* title, int x, int y, int width, int height, bool fullscreen);
         void clean();
-        void update(float updateRate);
+        void update(double updateRate);
         void render();
         void handleEvents();
         bool running() {return isRunning;}
