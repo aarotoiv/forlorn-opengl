@@ -1,6 +1,7 @@
 #include "Spell.hpp"
 
-Spell::Spell() {
+Spell::Spell(int spellType) {
+    type = spellType;
     x = 0;
     y = 0;
     attached = true;
@@ -43,7 +44,10 @@ void Spell::draw(glm::mat4 projectionMatrix, float middleX, float middleY, float
     model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-    glUniform3f(uniformColor, 1.0f, 0.0f, 0.0f);
+    if(type == 1)
+        glUniform3f(uniformColor, 1.0f, 0.0f, 0.0f);
+    if(type == 2) 
+        glUniform3f(uniformColor, 0.0f, 1.0f, 0.0f);
     glUniform1f(uniformAlpha, 0.6f);
     theMesh->RenderMesh();
     glUseProgram(0);

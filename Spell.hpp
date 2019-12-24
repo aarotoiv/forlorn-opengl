@@ -12,7 +12,7 @@
 
 class Spell {
     public:
-        Spell();
+        Spell(int spellType);
         ~Spell();
         void draw(glm::mat4 projectionMatrix, float playerX, float playerY, float playerScale);
         void update(bool isAttached, float xPos, float yPos);
@@ -22,6 +22,7 @@ class Spell {
         Shader *theShader;
         float x, y;
         bool attached;
+        int type;
 };
 
 #endif

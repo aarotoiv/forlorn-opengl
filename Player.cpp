@@ -19,8 +19,8 @@ Player::Player() {
     uniformModel = 0;
     uniformView = 0;
 
-    rightSpell = new Spell();
-    //leftSpell = new Spell();
+    rightSpell = new Spell(1);
+    leftSpell = new Spell(2);
 
 
     //gl_Position = projection * view * model * vec4(pos, 1.0)
@@ -139,6 +139,16 @@ void Player::Draw(glm::mat4 projectionMatrix) {
 
     handMesh->RenderMesh();
 
+    if(direction) {
+        if(leftSpell != nullptr) {
+            leftSpell->draw(projectionMatrix, 0.120f, bottomY + 0.25f, scale);
+        }
+    } else {
+        if(rightSpell != nullptr) {
+            rightSpell->draw(projectionMatrix, -0.120f, bottomY + 0.25f, scale);
+        }
+    }
+
     //body
     theShader->UseShader();
     uniformProjection = theShader->GetProjectionLocation();
@@ -172,11 +182,18 @@ void Player::Draw(glm::mat4 projectionMatrix) {
     
     glUseProgram(0);
 
-
-    if(rightSpell != nullptr) {
-        rightSpell->draw(projectionMatrix, 0.075f, bottomY + 0.25f, scale);
+    if(direction) {
+        if(rightSpell != nullptr) {
+            rightSpell->draw(projectionMatrix, 0.075f, bottomY + 0.25f, scale);
+        }
+    }
+    else {
+        if(leftSpell != nullptr) {
+            leftSpell->draw(projectionMatrix, -0.075f, bottomY + 0.25f, scale);
+        }
     }
 }
+
 
 void Player::Update(double updateRate) {
     if(falling && yMom < yMomCap && !jumping) {
