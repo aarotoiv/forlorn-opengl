@@ -6,6 +6,8 @@ Shader::Shader()
     shaderID = 0;
     uniformModel = 0;
     uniformProjection = 0;
+    uniformColor = 0;
+    uniformAlpha = 0;
 }
  
 void Shader::CreateFromString(const char* vertexCode, const char* fragmentCode) {
@@ -52,6 +54,9 @@ GLuint Shader::GetViewLocation() {
 GLuint Shader::GetColorLocation() {
     return uniformColor;
 }
+GLuint Shader::GetAlphaLocation() {
+    return uniformAlpha;
+}
  
 void Shader::CompileShader(const char* vertexCode, const char* fragmentCode) {
     shaderID = glCreateProgram();
@@ -88,6 +93,7 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode) {
     uniformProjection = glGetUniformLocation(shaderID, "projection");
     uniformView = glGetUniformLocation(shaderID, "view");
     uniformColor = glGetUniformLocation(shaderID, "uColor");
+    uniformAlpha = glGetUniformLocation(shaderID, "uAlpha");
 }
  
 void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType) {

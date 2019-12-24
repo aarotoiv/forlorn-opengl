@@ -28,6 +28,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+
         
         std::cout << "SUBSYSTEMS INITIALIZEd" << std::endl;
         window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
@@ -68,6 +69,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
             glViewport(0,0,bufferWidth, bufferHeight);
 
+            glDisable(GL_CULL_FACE);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_BLEND);
             glEnable(GL_MULTISAMPLE);
 
             

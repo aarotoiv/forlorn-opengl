@@ -1,6 +1,6 @@
 #include "Game.hpp"
 
-const int FPS = 60;
+const int FPS = 120;
 const int frameDelay = 1000/FPS;
 Game *game = nullptr;
 SDL_Thread *update = nullptr;
@@ -17,7 +17,7 @@ int main(int argc, char* args[]) {
 
     game = new Game();
 
-    game->init("Meme", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, false);
+    game->init("Meme", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1600, 900, false);
 
     Uint32 frameStart;
     int frameTime;
@@ -44,7 +44,7 @@ int updateThread(void *data) {
     while(game->running()) {
         std::chrono::nanoseconds diff = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()) - ns;
         double updateRate = ((double)diff.count() / (double)1000000000);
-        if(updateRate > (double)1.0/(double)FPS) {
+        if(updateRate >= (double)1.0/(double)FPS) {
             game->update(updateRate);
             ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch());
         }

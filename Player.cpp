@@ -8,50 +8,63 @@ Player::Player() {
     direction = true;
 
     falling = true;
+    jumping = false;
+    jumpHeight = 0.0f;
 
     goingLeft = false;
     goingRight = false;
-
+    tryingToJump = false;
 
     uniformProjection = 0;
     uniformModel = 0;
     uniformView = 0;
 
+    rightSpell = new Spell();
+    //leftSpell = new Spell();
+
+
     //gl_Position = projection * view * model * vec4(pos, 1.0)
 
+    unsigned int handIndices[] = {
+        0, 1, 2,
+        0, 2, 3
+    };  
+    
+    GLfloat handVertices[] = {
+        0.0f, bottomY + 0.325f, 1.0f, 
+        0.150f, bottomY + 0.325f, 1.0f,
+        0.150f, bottomY + 0.175f, 1.0f,
+        0.0f, bottomY + 0.175f, 1.0f
+    };
+
+    handMesh = new Mesh();
+    handMesh->CreateMesh(handVertices, handIndices, 12, 6, NULL, 0);
+    handShader = new Shader();
+    handShader->CreateFromFiles("Shaders/singleCol.vert", "Shaders/shader.frag");
+
+
     unsigned int indices[] = {
-        0,1,2,
-        0,2,3,
         //BODY (4 * 3 = 12)
-        4, 5, 6,
-        4, 7, 5,
-        4, 7, 8,
-        8, 9, 7,
+        0, 1, 2,
+        0, 3, 1,
+        0, 3, 4,
+        4, 5, 3,
 
         //leftleg (6)
-        10, 11, 12,
-        10, 12, 13,
+        6, 7, 8,
+        6, 8, 9,
         
         //rightleg (6)
-        14, 15, 16,
-        14, 16, 17,
+        10, 11, 12,
+        10, 12, 13,
 
         //head (6)
-        18, 19, 20,
-        18, 20, 21,
-        
-        //hand
-        22, 23, 24,
-        22, 24, 25
-
+        14, 15, 16,
+        14, 16, 17
     };
     
     GLfloat vertices[] = {
-        0.045f, bottomY + 0.325f, 1.0f, 
-        0.195f, bottomY + 0.325f, 1.0f,
-        0.195f, bottomY + 0.175f, 1.0f,
-        0.045f, bottomY + 0.175f, 1.0f,
-        //BODY (6 * 3 = 18)
+        //body
         -0.075f, bottomY + 0.4f, 1.0f,
         -0.075f, bottomY + 0.05f, 1.0f,
         -0.125f, bottomY + 0.35f, 1.0f,
@@ -73,21 +86,9 @@ Player::Player() {
         -0.15f, bottomY + 0.7f, 1.0f,
         0.175f, bottomY + 0.7f, 1.0f,
         0.175f, bottomY + 0.36f, 1.0f,
-        -0.15f, bottomY + 0.4f, 1.0f,
-        //hand
-        0.010f, bottomY + 0.325f, 1.0f, 
-        0.160f, bottomY + 0.325f, 1.0f,
-        0.160f, bottomY + 0.175f, 1.0f,
-        0.010f, bottomY + 0.175f, 1.0f
-
+        -0.15f, bottomY + 0.4f, 1.0f
     };
     GLfloat colors[] = {
-        //hand
-        1.0f, 200.0f / 255.0f, 157.0f / 255.0f,
-        1.0f, 200.0f / 255.0f, 157.0f / 255.0f,
-        1.0f, 200.0f / 255.0f, 157.0f / 255.0f,
-        1.0f, 200.0f / 255.0f, 157.0f / 255.0f,
-
         //BODY (6 * 3 = 18)
         0.2f, 0.2f, 0.2f,
         0.2f, 0.2f, 0.2f,
@@ -112,34 +113,33 @@ Player::Player() {
         1.0, 220.0f / 255.0f, 177.0f / 255.0f,
         1.0, 220.0f / 255.0f, 177.0f / 255.0f,
         1.0, 220.0f / 255.0f, 177.0f / 255.0f,
-        1.0, 220.0f / 255.0f, 177.0f / 255.0f,
-
-        //hand
-        1.0, 220.0f / 255.0f, 177.0f / 255.0f,
-        1.0, 220.0f / 255.0f, 177.0f / 255.0f,
-        1.0, 220.0f / 255.0f, 177.0f / 255.0f,
         1.0, 220.0f / 255.0f, 177.0f / 255.0f
-
     };
 
     theMesh = new Mesh();
     //vertex count, index count, colorcount
-    theMesh->CreateMesh(vertices, indices, 78, 42, colors, 78);
+    theMesh->CreateMesh(vertices, indices, 54, 30, colors, 54);
     theShader = new Shader();
     theShader->CreateFromFiles("Shaders/shader.vert", "Shaders/shader.frag");
 
 }
-/*void Player::DrawLimb(GLfloat* vertices, unsigned int* indices, glm::vec3 color) {
-    theMesh->CreateMesh(vertices, indices, 12, 6);
-    theShader->UseShader();
-    GLuint uniformColor = theShader->GetColorLocation();
-    glUniform4fv(uniformColor, 1, GL_FALSE, glvec3::value_ptr(color));
-    theMesh->RenderMesh();
-}*/
 void Player::Draw(glm::mat4 projectionMatrix) {
     int scaleDirectionMod = direction ? 1 : -1;
-    //std::cout << "THEERROR " << glGetError() << std::endl;
-    //std::cout << glm::to_string(projection) << std::endl;
+    //backhand
+    handShader->UseShader();
+    uniformProjection = handShader->GetProjectionLocation();
+    uniformModel = handShader->GetModelLocation();
+    glm::mat4 handFirst(1.0);
+    handFirst = glm::translate(handFirst, glm::vec3(0.045f*scale * scaleDirectionMod, 0.0f, -2.5f));
+    handFirst = glm::scale(handFirst, glm::vec3(scaleDirectionMod * scale, scale, 1.0f));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(handFirst));
+    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniform3f(handShader->GetColorLocation(), 227.0f/255.0f, 161.0f/255.0f, 115.0f/255.0f);
+    glUniform1f(handShader->GetAlphaLocation(), 1.0);
+
+    handMesh->RenderMesh();
+
+    //body
     theShader->UseShader();
     uniformProjection = theShader->GetProjectionLocation();
     uniformModel = theShader->GetModelLocation();
@@ -149,21 +149,45 @@ void Player::Draw(glm::mat4 projectionMatrix) {
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
     
-    
-    
-    // works glUniform3f(theShader->GetColorLocation(), 1.0f, 1.0f, 1.0f);
-    
-    
-    //HANDLE MATRIX STUFF
+
     theMesh->RenderMesh();
+
+    uniformProjection = 0;
+    uniformModel = 0;
+    uniformView = 0;
+
+    //tophand
+    handShader->UseShader();
+    uniformProjection = handShader->GetProjectionLocation();
+    uniformModel = handShader->GetModelLocation();
+    glm::mat4 hand(1.0);
+    hand = glm::translate(hand, glm::vec3(0.0f, 0.0f, -2.5f));
+    hand = glm::scale(hand, glm::vec3(scaleDirectionMod * scale, scale, 1.0f));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(hand));
+    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniform3f(handShader->GetColorLocation(), 1.0f, 220.0f/255.0f, 177.0f/255.0f);
+    glUniform1f(handShader->GetAlphaLocation(), 1.0);
+
+    handMesh->RenderMesh();
     
     glUseProgram(0);
+
+
+    if(rightSpell != nullptr) {
+        rightSpell->draw(projectionMatrix, 0.075f, bottomY + 0.25f, scale);
+    }
 }
 
 void Player::Update(double updateRate) {
-    std::cout << 0.02f * updateRate << "\t" << yMom << yMom + 0.02f * updateRate << std::endl;
-    if(falling && yMom < yMomCap) {
+    if(falling && yMom < yMomCap && !jumping) {
         yMom += 0.02f * updateRate;
+    } else if(jumping) {
+        yMom = -1.5f * updateRate;
+        jumpHeight -= yMom;
+        if(jumpHeight >= jumpCap) {
+            jumping = false;
+            jumpHeight = 0.0f;
+        }
     } else {
         yMom = 0.0f;
     }
@@ -176,6 +200,7 @@ void Player::Update(double updateRate) {
     if(!goingLeft && !goingRight) 
         xMom = 0;
 
+    
     xPos += xMom * updateRate;
     yPos += yMom;
 
@@ -183,6 +208,9 @@ void Player::Update(double updateRate) {
         direction = true;
     if(xMom < 0) 
         direction = false;
+    
+    if(tryingToJump)
+        attemptJump();
 }
 
 
@@ -200,8 +228,36 @@ float Player::GetWidth() {
 float Player::GetHeight() {
     return baseHeight * scale;
 }
+float Player::GetScale() {
+    return scale;
+}
+float Player::GetRawBottom() {
+    return bottomY;
+}
 float Player::YPosForDraw() {
     return yPos + bottomY * scale;
+}
+
+void Player::HandleKeyDown(std::string key) {
+    if(key == "left") {
+        goingLeft = true;
+    }
+    if(key == "right") {
+        goingRight = true;
+    }
+    if(key == "space") 
+        tryingToJump = true;
+}
+
+void Player::HandleKeyUp(std::string key) {
+    if(key == "left") {
+        goingLeft = false;
+    }
+    if(key == "right") {
+        goingRight = false;
+    }
+    if(key == "space")
+        tryingToJump = false;
 }
 
 void Player::HandleCollisions(float bottom, float left, float top, float right) {
@@ -214,20 +270,8 @@ void Player::HandleCollisions(float bottom, float left, float top, float right) 
     }
 }
 
-void Player::HandleKeyDown(std::string key) {
-    if(key == "left") {
-        goingLeft = true;
-    }
-    if(key == "right") {
-        goingRight = true;
-    }
-}
-
-void Player::HandleKeyUp(std::string key) {
-    if(key == "left") {
-        goingLeft = false;
-    }
-    if(key == "right") {
-        goingRight = false;
+void Player::attemptJump() {
+    if(!falling && !jumping) {
+        jumping = true;
     }
 }

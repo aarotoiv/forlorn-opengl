@@ -1,6 +1,7 @@
 #include "World.h"
 World::World() {
     worldBlocks.push_back(*new Block(-0.5f, -0.4f, 1.5f, -0.2f));
+    worldBlocks.push_back(*new Block(1.5f, -0.4f, 1.5f, -0.2f));
 }
 World::~World() {
 
