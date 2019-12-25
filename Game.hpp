@@ -29,7 +29,7 @@ class Game {
         void handleEvents();
         bool running() {return isRunning;}
 
-        std::string parseKey(SDL_Event);
+        void parseKey(SDL_Event, bool isDown);
 
     private:
         int cnt = 0;

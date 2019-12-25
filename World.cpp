@@ -6,13 +6,18 @@ World::World() {
 World::~World() {
 
 }
-void World::update() {
-
+void World::update(double updateRate) {
+    for(int i = 0; i<spells.size(); i++) {
+        spells[i]->update(updateRate);
+    }
 }
 void World::draw(glm::mat4 projection, float xPos, float yPos) {
     for(int i = 0; i<worldBlocks.size(); i++) {
         Block block = worldBlocks[i];
         block.draw(projection, xPos, yPos);
+    }
+    for(int i = 0; i<spells.size(); i++) {
+        spells[i]->draw(projection, xPos, yPos);
     }
 }
 
@@ -35,4 +40,10 @@ Collisions World::checkCollisions(float xPos, float yPos, float width, float hei
             collisions.bottom = bottomCollision;
     }
     return collisions;
+}
+
+void World::spellLaunch(Spell* launchedSpell) {
+    if(launchedSpell != nullptr) {
+        spells.push_back(launchedSpell);
+    }
 }

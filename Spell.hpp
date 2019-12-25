@@ -14,8 +14,10 @@ class Spell {
     public:
         Spell(int spellType);
         ~Spell();
-        void draw(glm::mat4 projectionMatrix, float playerX, float playerY, float playerScale);
-        void update(bool isAttached, float xPos, float yPos);
+        void draw(glm::mat4 projectionMatrix, float middleX, float middleY, float playerScale);
+        void draw(glm::mat4 projectionMatrix, float playerX, float playerY);
+        void update(double updateRate);
+        void launch(float xPos, float yPos, int direction);
     private:
         GLuint uniformProjection, uniformModel, uniformView, uniformColor, uniformAlpha;
         Mesh *theMesh;
@@ -23,6 +25,9 @@ class Spell {
         float x, y;
         bool attached;
         int type;
+        int moveDir;
+        const float moveSpeed = 1.0f;
+        const float spellScale = 0.4f;
 };
 
 #endif

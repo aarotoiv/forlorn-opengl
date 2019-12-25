@@ -22,6 +22,8 @@ Player::Player() {
     rightSpell = new Spell(1);
     leftSpell = new Spell(2);
 
+    lhMiddleX = 0.0f, rhMiddleX = 0.0f, lhMiddleY = 0.0f, rhMiddleY = 0.0f;
+
 
     //gl_Position = projection * view * model * vec4(pos, 1.0)
 
@@ -141,11 +143,11 @@ void Player::Draw(glm::mat4 projectionMatrix) {
 
     if(direction) {
         if(leftSpell != nullptr) {
-            leftSpell->draw(projectionMatrix, 0.120f, bottomY + 0.25f, scale);
+            leftSpell->draw(projectionMatrix, lhMiddleX / scale, lhMiddleY / scale, scale);
         }
     } else {
         if(rightSpell != nullptr) {
-            rightSpell->draw(projectionMatrix, -0.120f, bottomY + 0.25f, scale);
+            rightSpell->draw(projectionMatrix, rhMiddleX / scale, rhMiddleY / scale, scale);
         }
     }
 
@@ -184,12 +186,12 @@ void Player::Draw(glm::mat4 projectionMatrix) {
 
     if(direction) {
         if(rightSpell != nullptr) {
-            rightSpell->draw(projectionMatrix, 0.075f, bottomY + 0.25f, scale);
+            rightSpell->draw(projectionMatrix, rhMiddleX / scale, rhMiddleY / scale, scale);
         }
     }
     else {
         if(leftSpell != nullptr) {
-            leftSpell->draw(projectionMatrix, -0.075f, bottomY + 0.25f, scale);
+            leftSpell->draw(projectionMatrix, lhMiddleX / scale, lhMiddleY / scale, scale);
         }
     }
 }
@@ -228,6 +230,21 @@ void Player::Update(double updateRate) {
     
     if(tryingToJump)
         attemptJump();
+
+
+    if(direction) {
+        lhMiddleX = 0.12 * scale;
+        lhMiddleY = (bottomY + 0.25f) * scale;
+
+        rhMiddleX = 0.075f * scale;
+        rhMiddleY = (bottomY + 0.25f) * scale;
+    } else {
+        lhMiddleX = -0.075f * scale;
+        lhMiddleY = (bottomY + 0.25f) * scale;
+
+        rhMiddleX = -0.12f * scale;
+        rhMiddleY = (bottomY + 0.25f) * scale;
+    }
 }
 
 
@@ -291,4 +308,19 @@ void Player::attemptJump() {
     if(!falling && !jumping) {
         jumping = true;
     }
+}
+
+Spell* Player::LaunchSpell(int spellNum) {
+    Spell* returnVal = nullptr;
+    if(spellNum == 0 && rightSpell != nullptr) {
+        returnVal = rightSpell;
+        rightSpell = nullptr;
+    }
+    else if(spellNum == 1 && leftSpell != nullptr) {
+        returnVal = leftSpell;
+        leftSpell = nullptr;
+    } 
+    if(returnVal != nullptr) 
+        returnVal->launch(xPos + (spellNum == 0 ? rhMiddleX : lhMiddleX), -yPos - (spellNum == 0 ? rhMiddleY : lhMiddleY), direction ? 1 : -1);
+    return returnVal;
 }

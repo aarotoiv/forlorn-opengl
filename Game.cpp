@@ -92,28 +92,27 @@ void Game::update(double updateRate) {
     Collisions collisions = world->checkCollisions(player->GetX(), player->GetBottom(), player->GetWidth(), player->GetHeight());
     //std::cout << collisions.bottom << std::endl;
     player->HandleCollisions(collisions.bottom, collisions.left, collisions.top, collisions.right);
+    world->update(updateRate);
 }
 
 void Game::render() {
-    //projection = glm::perspective(45.0f, (GLfloat)bufferWidth / (GLfloat)bufferHeight, 0.1f, 100.0f);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    //RENDER FUNCTION
-    //HANDLE THE MATRICES IN player?
+
     player->Draw(projection);
     world->draw(projection, player->GetX(), player->YPosForDraw());
+
     SDL_GL_SwapWindow(window);
-    //SDL_RenderPresent(renderer);
 }
 void Game::handleEvents() {
     SDL_Event event;
     SDL_PollEvent(&event);
     switch(event.type) {
         case SDL_KEYDOWN:
-            player->HandleKeyDown(parseKey(event));
+            parseKey(event, true);
             break;
         case SDL_KEYUP:
-            player->HandleKeyUp(parseKey(event));
+            parseKey(event, false);
             break;
         case SDL_QUIT:
             isRunning = false;
@@ -122,20 +121,22 @@ void Game::handleEvents() {
             break;
     }
 }
-
-std::string Game::parseKey(SDL_Event event) {
+void Game::parseKey(SDL_Event event, bool isDown) {
     switch(event.key.keysym.sym) {
         case SDLK_a: 
-            return "left";
+            isDown ? player->HandleKeyDown("left") : player->HandleKeyUp("left");
             break;
         case SDLK_d:
-            return "right";
+            isDown ? player->HandleKeyDown("right") : player->HandleKeyUp("right");
             break;
         case SDLK_SPACE:
-            return "space";
+            isDown ? player->HandleKeyDown("space") : player->HandleKeyUp("space");
+            break;
+        case SDLK_f:
+        case SDLK_g:
+            world->spellLaunch(player->LaunchSpell(event.key.keysym.sym == SDLK_f ? 0 : 1));
             break;
         default: 
-            return "";
             break;
     }
 }

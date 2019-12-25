@@ -34,6 +34,8 @@ class Player {
 
         void attemptJump();
 
+        Spell* LaunchSpell(int spellNum);
+
     private:
         Mesh *theMesh;
         Shader *theShader;   
@@ -74,6 +76,11 @@ class Player {
         //spawn coords
         float spawnX = 0.0f;
         float spawnY = -1.0f;
+
+        float lhMiddleX;
+        float rhMiddleX;
+        float lhMiddleY;
+        float rhMiddleY;
 };
 
 #endif
