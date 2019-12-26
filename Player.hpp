@@ -14,7 +14,7 @@
 class Player {
     public:
         Player();
-        void Draw(glm::mat4 projectionMatrix);
+        void Draw(glm::mat4 projectionMatrix, Shader* spellShader, Mesh *spellMesh);
         void DrawLimb(GLfloat* vertices, unsigned int* indices, glm::vec4 color);
         void Update(double updateRate);
         ~Player();
@@ -34,7 +34,7 @@ class Player {
 
         void attemptJump();
 
-        Spell* LaunchSpell(int spellNum);
+        Seed* LaunchSpell(int spellNum);
 
     private:
         Mesh *theMesh;
@@ -45,6 +45,7 @@ class Player {
 
         Spell *rightSpell;
         Spell *leftSpell;
+        Spell *temp;
         
         GLuint uniformModel, uniformProjection, uniformView;
         //drawing lowest y
@@ -54,7 +55,7 @@ class Player {
         //base sizes
         float baseWidth = 0.35f, baseHeight = 0.7f;
         //player scale, transforms player scale
-        float scale = 0.4;
+        float scale = 0.3;
         //momentums
         float xMom;
         float yMom;

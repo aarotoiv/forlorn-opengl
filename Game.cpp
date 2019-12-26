@@ -99,7 +99,7 @@ void Game::render() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    player->Draw(projection);
+    player->Draw(projection, world->getSpellShader(), world->getSpellMesh());
     world->draw(projection, player->GetX(), player->YPosForDraw());
 
     SDL_GL_SwapWindow(window);

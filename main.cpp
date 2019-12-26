@@ -23,7 +23,7 @@ int main(int argc, char* args[]) {
     int frameTime;
 
     update = SDL_CreateThread(updateThread, "updating", NULL);
-    event = SDL_CreateThread(eventThread, "events", NULL);
+    //event = SDL_CreateThread(eventThread, "events", NULL);
 
     while(game->running()) {
         frameStart = SDL_GetTicks();
@@ -45,6 +45,7 @@ int updateThread(void *data) {
         std::chrono::nanoseconds diff = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()) - ns;
         double updateRate = ((double)diff.count() / (double)1000000000);
         if(updateRate >= (double)1.0/(double)FPS) {
+            game->handleEvents();
             game->update(updateRate);
             ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch());
         }

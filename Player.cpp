@@ -125,7 +125,7 @@ Player::Player() {
     theShader->CreateFromFiles("Shaders/shader.vert", "Shaders/shader.frag");
 
 }
-void Player::Draw(glm::mat4 projectionMatrix) {
+void Player::Draw(glm::mat4 projectionMatrix, Shader* spellShader, Mesh* spellMesh) {
     int scaleDirectionMod = direction ? 1 : -1;
     //backhand
     handShader->UseShader();
@@ -143,11 +143,11 @@ void Player::Draw(glm::mat4 projectionMatrix) {
 
     if(direction) {
         if(leftSpell != nullptr) {
-            leftSpell->draw(projectionMatrix, lhMiddleX / scale, lhMiddleY / scale, scale);
+            leftSpell->draw(projectionMatrix, lhMiddleX / scale, lhMiddleY / scale, scale, spellShader, spellMesh);
         }
     } else {
         if(rightSpell != nullptr) {
-            rightSpell->draw(projectionMatrix, rhMiddleX / scale, rhMiddleY / scale, scale);
+            rightSpell->draw(projectionMatrix, rhMiddleX / scale, rhMiddleY / scale, scale, spellShader, spellMesh);
         }
     }
 
@@ -186,12 +186,12 @@ void Player::Draw(glm::mat4 projectionMatrix) {
 
     if(direction) {
         if(rightSpell != nullptr) {
-            rightSpell->draw(projectionMatrix, rhMiddleX / scale, rhMiddleY / scale, scale);
+            rightSpell->draw(projectionMatrix, rhMiddleX / scale, rhMiddleY / scale, scale, spellShader, spellMesh);
         }
     }
     else {
         if(leftSpell != nullptr) {
-            leftSpell->draw(projectionMatrix, lhMiddleX / scale, lhMiddleY / scale, scale);
+            leftSpell->draw(projectionMatrix, lhMiddleX / scale, lhMiddleY / scale, scale, spellShader, spellMesh);
         }
     }
 }
@@ -310,17 +310,12 @@ void Player::attemptJump() {
     }
 }
 
-Spell* Player::LaunchSpell(int spellNum) {
-    Spell* returnVal = nullptr;
+Seed* Player::LaunchSpell(int spellNum) {
     if(spellNum == 0 && rightSpell != nullptr) {
-        returnVal = rightSpell;
-        rightSpell = nullptr;
+        return rightSpell->getSeed(xPos + (spellNum == 0 ? rhMiddleX : lhMiddleX), -yPos - (spellNum == 0 ? rhMiddleY : lhMiddleY), direction ? 1 : -1, false);
     }
     else if(spellNum == 1 && leftSpell != nullptr) {
-        returnVal = leftSpell;
-        leftSpell = nullptr;
-    } 
-    if(returnVal != nullptr) 
-        returnVal->launch(xPos + (spellNum == 0 ? rhMiddleX : lhMiddleX), -yPos - (spellNum == 0 ? rhMiddleY : lhMiddleY), direction ? 1 : -1);
-    return returnVal;
+        return leftSpell->getSeed(xPos + (spellNum == 0 ? rhMiddleX : lhMiddleX), -yPos - (spellNum == 0 ? rhMiddleY : lhMiddleY), direction ? 1 : -1, false);
+    }
+    return nullptr;
 }
